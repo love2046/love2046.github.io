@@ -2,7 +2,9 @@ import markdown2
 text='''
 #this is header
 ##sub title
+
 hello world
+
 test
 '''
 html=markdown2.markdown(text)
