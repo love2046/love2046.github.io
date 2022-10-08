@@ -3,6 +3,7 @@ SITENAME = 'blog'
 SITEURL = ''
 
 PATH = 'content'
+OUTPUT_PATH= '.'
 
 TIMEZONE = 'Asia/Shanghai'
 
