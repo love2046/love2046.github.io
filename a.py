@@ -5,7 +5,9 @@ text='''
 
 hello world
 
-test
+* test1
+* test2
+* test2
 '''
 html=markdown2.markdown(text)
 print(html)
