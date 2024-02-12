@@ -11,6 +11,10 @@ def split(filename):
             else:
                 new_line.append(line)
     return ''.join(new_line)
+def remove_line(filename):
+    with open(filename,"r") as f:
+        content=f.read()
+
 def save(filename,content):
     with open(filename,"w") as f:
         f.write(content)
