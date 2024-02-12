@@ -17,7 +17,7 @@
 
 [^](bible/index.md)[歌罗西书](COL01.htm#V0)
 [问候](bible/COL01.md#V0)
-[为信徒感谢　神](bible/COL01.md#V2)
+[为信徒感谢神](bible/COL01.md#V2)
 [基督的位格和工作](bible/COL01.md#V8)
 [保罗为教会的工作](bible/COL01.md#V23)
 [基督里生命的丰盛](bible/COL02.md#V5)

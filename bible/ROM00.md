@@ -18,7 +18,7 @@
 [^](bible/index.md)[罗马书](ROM01.htm#V0)
 [祝福](bible/ROM01.md#V0)
 [保罗有意访问罗马](bible/ROM01.md#V7)
-[福音是　神的大能](bible/ROM01.md#V15)
+[福音是神的大能](bible/ROM01.md#V15)
 [人类的罪恶](bible/ROM01.md#V17)
 [神的公义判断](bible/ROM02.md#V0)
 [犹太人与律法](bible/ROM02.md#V16)

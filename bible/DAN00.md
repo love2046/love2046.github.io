@@ -27,7 +27,7 @@
 [三人获释且得高升](bible/DAN03.md#V25)
 [尼布甲尼撒的第二个梦](bible/DAN04.md#V0)
 [但以理解梦](bible/DAN04.md#V18)
-[尼布甲尼撒颂赞　神](bible/DAN04.md#V33)
+[尼布甲尼撒颂赞神](bible/DAN04.md#V33)
 [伯沙撒王的宴会](bible/DAN05.md#V0)
 [但以理解释墙上的字](bible/DAN05.md#V12)
 [但以理在狮子坑中](bible/DAN06.md#V0)

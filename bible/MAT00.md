@@ -43,7 +43,7 @@
 [论禁食](bible/MAT06.md#V15)
 [论天上的财宝](bible/MAT06.md#V18)
 [论心里的光](bible/MAT06.md#V21)
-[论　神和财利](bible/MAT06.md#V23)
+[论神和财利](bible/MAT06.md#V23)
 [不要忧虑](bible/MAT06.md#V24)
 [不要论断人](bible/MAT07.md#V0)
 [祈求、寻找、叩门](bible/MAT07.md#V6)

@@ -32,7 +32,7 @@
 [十诫](bible/DEU05.md#V0)
 [百姓看见火焰烧山而惧怕](bible/DEU05.md#V22)
 [最大的诫命](bible/DEU06.md#V0)
-[警告人民不可背逆　神](bible/DEU06.md#V9)
+[警告人民不可背逆神](bible/DEU06.md#V9)
 [耶和华的子民](bible/DEU07.md#V0)
 [遵行诫命必蒙福](bible/DEU07.md#V11)
 [将得美地](bible/DEU08.md#V0)

@@ -113,7 +113,7 @@
 [失钱的比喻](bible/LUK15.md#V7)
 [浪子的比喻](bible/LUK15.md#V10)
 [不义的管家](bible/LUK16.md#V0)
-[律法和　神的国](bible/LUK16.md#V13)
+[律法和神的国](bible/LUK16.md#V13)
 [财主和拉撒路](bible/LUK16.md#V18)
 [罪，信心，仆人的本分](bible/LUK17.md#V0)
 [治好十个长大麻风的](bible/LUK17.md#V10)

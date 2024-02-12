@@ -32,8 +32,8 @@
 [劝勉和警告](bible/HEB10.md#V18)
 [论信](bible/HEB11.md#V0)
 [主的管教](bible/HEB12.md#V0)
-[警告弃绝　神恩典的人](bible/HEB12.md#V13)
-[蒙　神悦纳的服务](bible/HEB13.md#V0)
+[警告弃绝神恩典的人](bible/HEB12.md#V13)
+[蒙神悦纳的服务](bible/HEB13.md#V0)
 [祝福和问安](bible/HEB13.md#V19)
 
 * [<](bible/GEN01.md)

@@ -18,7 +18,7 @@
 [^](bible/index.md)[以斯拉记](EZR01.htm#V0)
 [塞鲁士下令犹太人返国](bible/EZR01.md#V0)
 [被掳归回者的名单](bible/EZR02.md#V0)
-[恢复敬拜　神的生活](bible/EZR03.md#V0)
+[恢复敬拜神的生活](bible/EZR03.md#V0)
 [开始重建圣殿](bible/EZR03.md#V7)
 [建殿之工受阻](bible/EZR04.md#V0)
 [阻扰重建耶路撒冷](bible/EZR04.md#V5)
