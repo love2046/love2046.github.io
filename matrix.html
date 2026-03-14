@@ -7,376 +7,113 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d0f14;
-    --bg2: #141720;
-    --bg3: #1c2030;
-    --border: #2a2f45;
-    --accent: #5b8aff;
-    --accent2: #ff6b6b;
-    --accent3: #43e8b0;
-    --text: #e8ecf5;
-    --text2: #7a8299;
-    --text3: #4a5066;
-    --cell-bg: #181c28;
-    --cell-hover: #1f2538;
-    --correct: #43e8b0;
-    --wrong: #ff6b6b;
-    --shadow: 0 8px 32px rgba(0,0,0,0.5);
-    --matrix-border: #3a4060;
+    --bg:#0d0f14; --bg2:#141720; --bg3:#1c2030; --border:#2a2f45;
+    --accent:#5b8aff; --accent2:#ff6b6b; --accent3:#43e8b0;
+    --text:#e8ecf5; --text2:#7a8299; --text3:#4a5066;
+    --cell-bg:#181c28; --cell-hover:#1f2538;
+    --correct:#43e8b0; --wrong:#ff6b6b;
+    --shadow:0 8px 32px rgba(0,0,0,0.5); --matrix-border:#3a4060;
   }
   .light {
-    --bg: #f0f2f8;
-    --bg2: #ffffff;
-    --bg3: #e8ecf5;
-    --border: #c8d0e8;
-    --accent: #3366ff;
-    --accent2: #e63030;
-    --accent3: #00a87a;
-    --text: #1a1e30;
-    --text2: #555e80;
-    --text3: #99a0b8;
-    --cell-bg: #f8f9ff;
-    --cell-hover: #edf0ff;
-    --correct: #00a87a;
-    --wrong: #e63030;
-    --shadow: 0 8px 32px rgba(0,0,0,0.12);
-    --matrix-border: #aab0cc;
+    --bg:#f0f2f8; --bg2:#ffffff; --bg3:#e8ecf5; --border:#c8d0e8;
+    --accent:#3366ff; --accent2:#e63030; --accent3:#00a87a;
+    --text:#1a1e30; --text2:#555e80; --text3:#99a0b8;
+    --cell-bg:#f8f9ff; --cell-hover:#edf0ff;
+    --correct:#00a87a; --wrong:#e63030;
+    --shadow:0 8px 32px rgba(0,0,0,0.12); --matrix-border:#aab0cc;
   }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Noto Sans SC',sans-serif; background:var(--bg); color:var(--text);
+    min-height:100vh; display:flex; flex-direction:column; align-items:center;
+    padding:24px 16px 48px; transition:background .3s,color .3s;
+  }
+  body::before{
+    content:''; position:fixed; inset:0;
+    background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);
+    background-size:40px 40px; opacity:.18; pointer-events:none; z-index:0;
+  }
+  header{width:100%;max-width:960px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;position:relative;z-index:1;}
+  .logo{font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;letter-spacing:-.02em;}
+  .logo span{color:var(--accent);}
+  .header-right{display:flex;gap:10px;align-items:center;}
+  .score-badge{font-family:'JetBrains Mono',monospace;font-size:.82rem;padding:6px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;color:var(--text2);}
+  .score-badge b{color:var(--accent3);}
+  .icon-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:var(--bg3);color:var(--text);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+  .icon-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .progress-bar-wrap{width:100%;max-width:960px;margin-bottom:12px;position:relative;z-index:1;}
+  .progress-bar-track{height:3px;background:var(--bg3);border-radius:2px;overflow:hidden;}
+  .progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent3));border-radius:2px;transition:width .4s ease;width:0%;}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  /* prob panel */
+  .prob-panel{width:100%;max-width:960px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;position:relative;z-index:1;transition:background .3s,border-color .3s;overflow:hidden;}
+  .prob-header{display:flex;justify-content:space-between;align-items:center;padding:10px 18px;cursor:pointer;user-select:none;}
+  .prob-title{font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;}
+  .prob-chevron{font-size:.78rem;color:var(--text3);transition:transform .25s;}
+  .prob-chevron.open{transform:rotate(180deg);}
+  .prob-body{padding:0 18px 16px;display:none;}
+  .prob-body.open{display:block;}
+  .prob-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px 14px;}
+  .prob-row{display:flex;flex-direction:column;gap:3px;}
+  .prob-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text2);display:flex;justify-content:space-between;}
+  .prob-label span{color:var(--accent);font-weight:600;}
+  input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;height:4px;}
+  .prob-reset{margin-top:10px;display:flex;justify-content:flex-end;gap:8px;align-items:center;}
+  .prob-note{font-family:'JetBrains Mono',monospace;font-size:.67rem;color:var(--text3);}
+  .prob-section-title{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
+  .special-prob-row{display:flex;gap:24px;flex-wrap:wrap;}
 
-  body {
-    font-family: 'Noto Sans SC', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 24px 16px 48px;
-    transition: background 0.3s, color 0.3s;
-  }
+  /* card */
+  .card{width:100%;max-width:960px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:24px 20px;box-shadow:var(--shadow);position:relative;z-index:1;transition:background .3s,border-color .3s;}
 
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(var(--border) 1px, transparent 1px),
-      linear-gradient(90deg, var(--border) 1px, transparent 1px);
-    background-size: 40px 40px;
-    opacity: 0.18;
-    pointer-events: none;
-    z-index: 0;
-  }
 
-  header {
-    width: 100%;
-    max-width: 920px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 32px;
-    position: relative;
-    z-index: 1;
-  }
+  /* problem row */
+  .problem-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:22px;}
+  .op-label{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:300;color:var(--text3);line-height:1;}
+  .matrix-block{display:flex;flex-direction:column;align-items:center;gap:5px;}
+  .type-tag{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:10px;border:1px solid transparent;white-space:nowrap;}
+  .type-tag.special{background:rgba(91,138,255,.12);border-color:rgba(91,138,255,.35);color:var(--accent);}
+  .type-tag.random{background:transparent;border-color:transparent;color:transparent;}
+  .type-tag.hidden{visibility:hidden;pointer-events:none;}
+  .type-tag.reveal-anim{visibility:visible;animation:tagReveal .4s ease forwards;}
+  @keyframes tagReveal{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 
-  .logo {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.4rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--text);
-  }
-  .logo span { color: var(--accent); }
+  .matrix-wrap{display:flex;align-items:stretch;}
+  .bracket{display:flex;align-items:center;width:12px;flex-shrink:0;}
+  .bracket svg{width:12px;height:100%;}
+  .matrix-grid{display:grid;gap:4px;padding:4px;}
+  .matrix-cell{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:600;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:var(--cell-bg);border:1px solid var(--border);border-radius:6px;color:var(--accent);transition:background .2s,color .2s;}
+  .matrix-cell.neg{color:var(--accent2);}
 
-  .header-right { display: flex; gap: 12px; align-items: center; }
+  /* answer 4×4 */
+  .answer-label{font-size:.73rem;font-family:'JetBrains Mono',monospace;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;text-align:center;}
+  .answer-outer{display:flex;align-items:stretch;justify-content:center;}
+  .answer-grid{display:grid;grid-template-columns:repeat(4,54px);grid-template-rows:repeat(4,54px);gap:5px;padding:4px;}
+  .answer-cell{position:relative;}
+  .answer-cell input{width:54px;height:54px;background:var(--cell-bg);border:1.5px solid var(--border);border-radius:7px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:600;text-align:center;outline:none;transition:border-color .15s,background .15s,transform .1s;-moz-appearance:textfield;}
+  .answer-cell input::-webkit-inner-spin-button,.answer-cell input::-webkit-outer-spin-button{-webkit-appearance:none;}
+  .answer-cell input:focus{border-color:var(--accent);background:var(--cell-hover);transform:scale(1.04);z-index:2;box-shadow:0 0 0 3px rgba(91,138,255,.18);}
+  .answer-cell input.inactive{opacity:.18;cursor:default;pointer-events:none;}
+  .answer-cell input.correct{border-color:var(--correct)!important;background:rgba(67,232,176,.1)!important;color:var(--correct)!important;}
+  .answer-cell input.wrong{border-color:var(--wrong)!important;background:rgba(255,107,107,.1)!important;color:var(--wrong)!important;animation:shake .3s ease;}
+  .answer-cell input.revealed{border-color:var(--accent2)!important;background:rgba(255,107,107,.08)!important;color:var(--accent2)!important;font-style:italic;}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
 
-  .score-badge {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.82rem;
-    padding: 6px 14px;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    color: var(--text2);
-    transition: all 0.3s;
-  }
-  .score-badge b { color: var(--accent3); }
-
-  .theme-btn {
-    width: 42px; height: 42px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    background: var(--bg3);
-    color: var(--text);
-    cursor: pointer;
-    font-size: 1.1rem;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s;
-  }
-  .theme-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
-
-  .card {
-    width: 100%;
-    max-width: 920px;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 28px 24px;
-    box-shadow: var(--shadow);
-    position: relative;
-    z-index: 1;
-    transition: background 0.3s, border-color 0.3s;
-  }
-
-  /* ─── Type labels above matrices ─── */
-  .matrix-block {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-  }
-  .type-tag {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 3px 9px;
-    border-radius: 10px;
-    border: 1px solid transparent;
-    transition: all 0.3s;
-    white-space: nowrap;
-  }
-  .type-tag.special {
-    background: rgba(91,138,255,0.12);
-    border-color: rgba(91,138,255,0.35);
-    color: var(--accent);
-  }
-  .type-tag.random {
-    background: transparent;
-    border-color: transparent;
-    color: var(--text3);
-  }
-  .type-tag.hidden {
-    visibility: hidden;
-    pointer-events: none;
-  }
-  .type-tag.reveal-anim {
-    visibility: visible;
-    animation: tagReveal 0.4s ease forwards;
-  }
-  @keyframes tagReveal {
-    from { opacity: 0; transform: translateY(-4px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .problem-row {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 28px;
-  }
-
-  .op-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 2rem;
-    font-weight: 300;
-    color: var(--text3);
-    line-height: 1;
-  }
-
-  .matrix-wrap {
-    display: flex;
-    align-items: stretch;
-    gap: 0;
-  }
-  .bracket {
-    display: flex;
-    align-items: center;
-    width: 12px;
-    flex-shrink: 0;
-  }
-  .bracket svg { width: 12px; height: 100%; }
-
-  .matrix-grid {
-    display: grid;
-    gap: 4px;
-    padding: 4px;
-  }
-  .matrix-cell {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.05rem;
-    font-weight: 600;
-    width: 40px; height: 40px;
-    display: flex; align-items: center; justify-content: center;
-    background: var(--cell-bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--accent);
-    transition: background 0.2s, color 0.2s;
-  }
-  .matrix-cell.neg { color: var(--accent2); }
-
-  /* ─── Answer grid (5×5) ─── */
-  .answer-label {
-    font-size: 0.78rem;
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--text3);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 10px;
-    text-align: center;
-  }
-  .answer-outer {
-    display: flex;
-    align-items: stretch;
-    gap: 0;
-    justify-content: center;
-  }
-
-  .answer-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 52px);
-    grid-template-rows: repeat(5, 52px);
-    gap: 5px;
-    padding: 4px;
-  }
-
-  .answer-cell { position: relative; }
-  .answer-cell input {
-    width: 52px; height: 52px;
-    background: var(--cell-bg);
-    border: 1.5px solid var(--border);
-    border-radius: 7px;
-    color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1rem;
-    font-weight: 600;
-    text-align: center;
-    outline: none;
-    transition: border-color 0.15s, background 0.15s, transform 0.1s;
-    -moz-appearance: textfield;
-  }
-  .answer-cell input::-webkit-inner-spin-button,
-  .answer-cell input::-webkit-outer-spin-button { -webkit-appearance: none; }
-  .answer-cell input:focus {
-    border-color: var(--accent);
-    background: var(--cell-hover);
-    transform: scale(1.04);
-    z-index: 2;
-    box-shadow: 0 0 0 3px rgba(91,138,255,0.18);
-  }
-  .answer-cell input.inactive {
-    opacity: 0.18;
-    cursor: default;
-    pointer-events: none;
-  }
-  .answer-cell input.correct {
-    border-color: var(--correct) !important;
-    background: rgba(67,232,176,0.1) !important;
-    color: var(--correct) !important;
-  }
-  .answer-cell input.wrong {
-    border-color: var(--wrong) !important;
-    background: rgba(255,107,107,0.1) !important;
-    color: var(--wrong) !important;
-    animation: shake 0.3s ease;
-  }
-  .answer-cell input.revealed {
-    border-color: var(--accent2) !important;
-    background: rgba(255,107,107,0.08) !important;
-    color: var(--accent2) !important;
-    font-style: italic;
-  }
-
-  @keyframes shake {
-    0%,100% { transform: translateX(0); }
-    25% { transform: translateX(-3px); }
-    75% { transform: translateX(3px); }
-  }
-
-  .controls {
-    display: flex;
-    gap: 10px;
-    margin-top: 24px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .btn {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    padding: 10px 22px;
-    border-radius: 8px;
-    border: 1.5px solid transparent;
-    cursor: pointer;
-    transition: all 0.18s;
-    text-transform: uppercase;
-  }
-  .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-  .btn-primary:hover { filter: brightness(1.15); transform: translateY(-1px); }
-  .btn-secondary { background: transparent; color: var(--text2); border-color: var(--border); }
-  .btn-secondary:hover { background: var(--bg3); border-color: var(--accent); color: var(--accent); }
-  .btn-danger { background: transparent; color: var(--accent2); border-color: var(--border); }
-  .btn-danger:hover { background: rgba(255,107,107,0.1); border-color: var(--accent2); }
-
-  .feedback {
-    margin-top: 16px;
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.88rem;
-    text-align: center;
-    opacity: 0;
-    transition: opacity 0.3s;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-  }
-  .feedback.show { opacity: 1; }
-  .feedback.ok { border-color: var(--correct); color: var(--correct); }
-  .feedback.fail { border-color: var(--wrong); color: var(--wrong); }
-  .feedback.info { border-color: var(--accent); color: var(--accent); }
-
-  .equals-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 2rem;
-    color: var(--text3);
-    display: flex;
-    align-items: center;
-  }
-
-  .result-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .progress-bar-wrap {
-    width: 100%;
-    max-width: 920px;
-    margin-bottom: 16px;
-    position: relative;
-    z-index: 1;
-  }
-  .progress-bar-track {
-    height: 3px;
-    background: var(--bg3);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .progress-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--accent3));
-    border-radius: 2px;
-    transition: width 0.4s ease;
-    width: 0%;
-  }
+  .controls{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;justify-content:center;}
+  .btn{font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:600;letter-spacing:.05em;padding:9px 20px;border-radius:8px;border:1.5px solid transparent;cursor:pointer;transition:all .18s;text-transform:uppercase;}
+  .btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .btn-primary:hover{filter:brightness(1.15);transform:translateY(-1px);}
+  .btn-secondary{background:transparent;color:var(--text2);border-color:var(--border);}
+  .btn-secondary:hover{background:var(--bg3);border-color:var(--accent);color:var(--accent);}
+  .btn-danger{background:transparent;color:var(--accent2);border-color:var(--border);}
+  .btn-danger:hover{background:rgba(255,107,107,.1);border-color:var(--accent2);}
+  .feedback{margin-top:14px;padding:10px 16px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:.85rem;text-align:center;opacity:0;transition:opacity .3s;background:var(--bg3);border:1px solid var(--border);}
+  .feedback.show{opacity:1;}
+  .feedback.ok{border-color:var(--correct);color:var(--correct);}
+  .feedback.fail{border-color:var(--wrong);color:var(--wrong);}
+  .feedback.info{border-color:var(--accent);color:var(--accent);}
+  .equals-label{font-family:'JetBrains Mono',monospace;font-size:1.8rem;color:var(--text3);display:flex;align-items:center;}
+  .result-section{display:flex;flex-direction:column;align-items:center;gap:6px;}
 </style>
 </head>
 <body>
@@ -385,35 +122,60 @@
   <div class="logo">Matrix<span>×</span>Lab</div>
   <div class="header-right">
     <div class="score-badge">正确 <b id="scoreOk">0</b> / 总计 <b id="scoreTotal">0</b></div>
-    <button class="theme-btn" id="themeBtn" title="切换模式">🌙</button>
+    <button class="icon-btn" id="themeBtn">🌙</button>
   </div>
 </header>
 
 <div class="progress-bar-wrap">
-  <div class="progress-bar-track">
-    <div class="progress-bar-fill" id="progressFill"></div>
+  <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
+</div>
+
+<div class="prob-panel">
+  <div class="prob-header" id="probHeader">
+    <div class="prob-title">⚙ 概率设置</div>
+    <div class="prob-chevron" id="probChevron">▼</div>
+  </div>
+  <div class="prob-body" id="probBody">
+    <div class="prob-section-title">数字出现概率（-3 到 9）</div>
+    <div class="prob-grid" id="probGrid"></div>
+    <div style="height:14px;"></div>
+    <div class="prob-section-title">题型概率</div>
+    <div class="prob-grid" id="typeGrid"></div>
+    <div style="height:14px;"></div>
+    <div class="prob-section-title">特殊矩阵（出现在普通题型中）</div>
+    <div class="special-prob-row">
+      <div class="prob-row" style="max-width:200px;">
+        <div class="prob-label">单侧特殊矩阵 <span id="wvSpecOne"></span></div>
+        <input type="range" min="0" max="50" step="1" value="15" id="wrSpecOne">
+      </div>
+      <div class="prob-row" style="max-width:200px;">
+        <div class="prob-label">双侧特殊矩阵 <span id="wvSpecBoth"></span></div>
+        <input type="range" min="0" max="50" step="1" value="5" id="wrSpecBoth">
+      </div>
+    </div>
+    <div class="prob-reset">
+      <span class="prob-note">所有滑块为相对权重，自动归一</span>
+      <button class="btn btn-secondary" id="resetProb" style="padding:6px 14px;font-size:.74rem;">恢复默认</button>
+    </div>
   </div>
 </div>
 
 <div class="card">
   <div class="problem-row" id="problemRow"></div>
-
   <div class="result-section">
-    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:center;">
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;">
       <div class="equals-label">=</div>
       <div>
-        <div class="answer-label">填写结果矩阵（5×5格，按需使用）</div>
+        <div class="answer-label">填写结果（4×4格，按需使用）</div>
         <div class="answer-outer" id="answerOuter"></div>
       </div>
     </div>
   </div>
-
   <div class="controls">
     <button class="btn btn-primary" id="checkBtn">检查答案</button>
     <button class="btn btn-secondary" id="nextBtn">下一题</button>
     <button class="btn btn-danger" id="revealBtn">显示答案</button>
   </div>
-
   <div class="feedback" id="feedback"></div>
 </div>
 
@@ -421,230 +183,420 @@
 const $ = id => document.getElementById(id);
 const rng = () => Math.random();
 
-function weightedInt(weights) {
-  const total = weights.reduce((s, w) => s + w[1], 0);
-  let r = rng() * total;
-  for (const [v, w] of weights) { r -= w; if (r <= 0) return v; }
-  return weights[weights.length-1][0];
-}
+// ─── Probability weights -3..9 ───────────────────────────────────────────────
+const DEFAULT_WEIGHTS = {
+  '-3':2,'-2':5,'-1':18,'0':30,'1':28,'2':10,'3':8,'4':5,'5':4,'6':1,'7':.8,'8':.6,'9':.4
+};
+let weights = {...DEFAULT_WEIGHTS};
 
-function randEntry() {
-  const weights = [
-    [0, 30], [1, 28], [-1, 18],
-    [2, 10], [3, 8], [4, 5],
-    [-2, 5], [5, 4],
-    [6, 1], [7, 0.8], [8, 0.6], [9, 0.4],
-  ];
-  return weightedInt(weights);
-}
-
-function randNonzero() {
-  const opts = [-3,-2,-1,1,2,3,1,1,2,-1,-1,2];
-  return opts[Math.floor(rng()*opts.length)];
-}
-
-function randDim() {
-  function oneDim() {
-    return rng() < 0.90 ? weightedInt([[1,1],[2,2],[3,3]]) : 4;
-  }
-  let r, c, attempts = 0;
-  do {
-    r = oneDim(); c = oneDim(); attempts++;
-    if (r === 4 && c === 4) continue;
-    if ((r === 3 && c === 4) || (r === 4 && c === 3)) { if (rng() < 0.60) continue; }
-    break;
-  } while (attempts < 50);
-  return [r, c];
-}
-
-function matMul(A, m, k, B, n) {
-  return Array.from({length:m}, (_, i) =>
-    Array.from({length:n}, (_, j) =>
-      Array.from({length:k}, (__, p) => A[i][p] * B[p][j]).reduce((a,b)=>a+b,0)));
-}
-
-// ─── Special matrix generators ───────────────────────────────────────────────
-function makeIdentity(n) {
-  return Array.from({length:n}, (_,i) => Array.from({length:n}, (_,j) => i===j?1:0));
-}
-function makeZero(r,c) {
-  return Array.from({length:r}, () => Array(c).fill(0));
-}
-function makeDiagonal(n) {
-  return Array.from({length:n}, (_,i) => Array.from({length:n}, (_,j) => i===j?randNonzero():0));
-}
-function makeScalar(n) {
-  const k = randNonzero();
-  return Array.from({length:n}, (_,i) => Array.from({length:n}, (_,j) => i===j?k:0));
-}
-function makeUpperTriangular(n) {
-  return Array.from({length:n}, (_,i) => Array.from({length:n}, (_,j) => j>=i?randEntry():0));
-}
-function makeLowerTriangular(n) {
-  return Array.from({length:n}, (_,i) => Array.from({length:n}, (_,j) => j<=i?randEntry():0));
-}
-function makePermutation(n) {
-  const perm = Array.from({length:n},(_,i)=>i);
-  for (let i=n-1;i>0;i--){const j=Math.floor(rng()*(i+1));[perm[i],perm[j]]=[perm[j],perm[i]];}
-  return Array.from({length:n}, (_,i) => Array.from({length:n}, (_,j) => j===perm[i]?1:0));
-}
-function makeSkewSymmetric(n) {
-  const M = Array.from({length:n},()=>Array(n).fill(0));
-  for (let i=0;i<n;i++) for (let j=i+1;j<n;j++) { const v=randEntry(); M[i][j]=v; M[j][i]=-v; }
-  return M;
-}
-function makeNilpotent(n) {
-  return Array.from({length:n}, (_,i) => Array.from({length:n}, (_,j) => j>i?randEntry():0));
-}
-
-const TYPE_LABELS = {
-  identity:    '单位矩阵 I',
-  zero:        '零矩阵 O',
-  diagonal:    '对角矩阵',
-  scalar:      '标量矩阵',
-  upper_tri:   '上三角矩阵',
-  lower_tri:   '下三角矩阵',
-  permutation: '置换矩阵',
-  skew:        '反对称矩阵',
-  nilpotent:   '幂零矩阵',
-  random:      '',
+// weights used when 0/1 should be more common (A² mode)
+const SQUARE_WEIGHTS = {
+  '-3':1,'-2':3,'-1':12,'0':40,'1':38,'2':6,'3':4,'4':2,'5':1,'6':.5,'7':.3,'8':.2,'9':.1
 };
 
-const SQUARE_TYPES = ['identity','diagonal','scalar','upper_tri','lower_tri','permutation','skew','nilpotent'];
+function randEntryWith(w) {
+  const keys = Object.keys(w);
+  const total = keys.reduce((s,k)=>s+w[k],0);
+  let r = rng()*total;
+  for (const k of keys) { r -= w[k]; if (r<=0) return parseInt(k); }
+  return parseInt(keys[keys.length-1]);
+}
+const randEntry  = () => randEntryWith(weights);
+const randEntryS = () => randEntryWith(SQUARE_WEIGHTS); // for A² type
+function randNonzero(){ let v; do{v=randEntry();}while(v===0); return v; }
+function randNonzeroS(){ let v; do{v=randEntryS();}while(v===0); return v; }
 
-function buildMatrix(type, r, c) {
-  const n = Math.min(r, c);
-  switch(type) {
-    case 'identity':    return { mat: makeIdentity(n),       rows:n, cols:n };
-    case 'zero':        return { mat: makeZero(r,c),          rows:r, cols:c };
-    case 'diagonal':    return { mat: makeDiagonal(n),        rows:n, cols:n };
-    case 'scalar':      return { mat: makeScalar(n),          rows:n, cols:n };
-    case 'upper_tri':   return { mat: makeUpperTriangular(n), rows:n, cols:n };
-    case 'lower_tri':   return { mat: makeLowerTriangular(n), rows:n, cols:n };
-    case 'permutation': return { mat: makePermutation(n),     rows:n, cols:n };
-    case 'skew':        return { mat: makeSkewSymmetric(n),   rows:n, cols:n };
-    case 'nilpotent':   return { mat: makeNilpotent(n),       rows:n, cols:n };
-    default:            return null;
+// ─── Prob panel ───────────────────────────────────────────────────────────────
+function buildProbPanel() {
+  const g=$('probGrid'); g.innerHTML='';
+  for(let n=-3;n<=9;n++){
+    const k=String(n), id='wr'+k.replace('-','m');
+    const row=document.createElement('div'); row.className='prob-row';
+    row.innerHTML=`<div class="prob-label">${n<0?n:n===0?'0':'+'+n} <span id="wv${k.replace('-','m')}"></span></div>
+      <input type="range" min="0" max="50" step="0.5" value="${weights[k]}" id="${id}">`;
+    g.appendChild(row);
+  }
+  updateProbLabels();
+  for(let n=-3;n<=9;n++){
+    const k=String(n),id='wr'+k.replace('-','m');
+    $(id).addEventListener('input',e=>{ weights[k]=parseFloat(e.target.value); updateProbLabels(); saveSettings(); });
   }
 }
+function updateProbLabels(){
+  const total=Object.values(weights).reduce((a,b)=>a+b,0)||1;
+  for(let n=-3;n<=9;n++){
+    const k=String(n),el=$('wv'+k.replace('-','m'));
+    if(el) el.textContent=(weights[k]/total*100).toFixed(1)+'%';
+  }
+}
+function resetWeights(){
+  weights={...DEFAULT_WEIGHTS};
+  for(let n=-3;n<=9;n++){const k=String(n),el=$('wr'+k.replace('-','m'));if(el)el.value=weights[k];}
+  updateProbLabels();
+  PROBLEM_TYPES.forEach(([dw,key])=>{ typeWeights[key]=dw; const el=$('wt'+key); if(el)el.value=dw; });
+  updateTypeLabels();
+  specOneWeight=15; specBothWeight=5;
+  $('wrSpecOne').value=15; $('wrSpecBoth').value=5;
+  updateSpecLabels();
+  saveSettings();
+}
+function buildTypePanel(){
+  const g=$('typeGrid'); g.innerHTML='';
+  for(const[dw,key,label] of PROBLEM_TYPES){
+    const id='wt'+key;
+    const row=document.createElement('div'); row.className='prob-row';
+    row.innerHTML=`<div class="prob-label">${label} <span id="wvt${key}"></span></div>
+      <input type="range" min="0" max="50" step="1" value="${typeWeights[key]}" id="${id}">`;
+    g.appendChild(row);
+  }
+  updateTypeLabels();
+  for(const[,key] of PROBLEM_TYPES){
+    $('wt'+key).addEventListener('input',e=>{ typeWeights[key]=parseFloat(e.target.value); updateTypeLabels(); saveSettings(); });
+  }
+}
+function updateTypeLabels(){
+  const total=PROBLEM_TYPES.reduce((s,[,k])=>s+typeWeights[k],0)||1;
+  for(const[,key] of PROBLEM_TYPES){
+    const el=$('wvt'+key); if(el) el.textContent=(typeWeights[key]/total*100).toFixed(0)+'%';
+  }
+}
+function buildSpecPanel(){
+  updateSpecLabels();
+  $('wrSpecOne').addEventListener('input',e=>{specOneWeight=parseFloat(e.target.value);updateSpecLabels();saveSettings();});
+  $('wrSpecBoth').addEventListener('input',e=>{specBothWeight=parseFloat(e.target.value);updateSpecLabels();saveSettings();});
+}
+function updateSpecLabels(){
+  const tot=specBothWeight+specOneWeight+80;
+  $('wvSpecOne').textContent=(specOneWeight/tot*100).toFixed(0)+'%';
+  $('wvSpecBoth').textContent=(specBothWeight/tot*100).toFixed(0)+'%';
+}
 
-function pickSpecialType() {
-  const all = ['identity','diagonal','scalar','upper_tri','lower_tri','permutation','skew','nilpotent'];
+$('probHeader').addEventListener('click',()=>{
+  const b=$('probBody'),c=$('probChevron'),o=b.classList.toggle('open');
+  c.classList.toggle('open',o);
+});
+$('resetProb').addEventListener('click',resetWeights);
+
+// ─── Math helpers ─────────────────────────────────────────────────────────────
+function matMul(A,m,k,B,n){
+  return Array.from({length:m},(_,i)=>
+    Array.from({length:n},(_,j)=>
+      Array.from({length:k},(__,p)=>A[i][p]*B[p][j]).reduce((a,b)=>a+b,0)));
+}
+function transpose(A,rows,cols){
+  return Array.from({length:cols},(_,j)=>Array.from({length:rows},(_,i)=>A[i][j]));
+}
+function weightedInt(ws){
+  const total=ws.reduce((s,w)=>s+w[1],0); let r=rng()*total;
+  for(const[v,w]of ws){r-=w;if(r<=0)return v;} return ws[ws.length-1][0];
+}
+function randDim(){
+  function oneDim(){return rng()<.90?weightedInt([[1,1],[2,2],[3,3]]):4;}
+  let r,c,at=0;
+  do{r=oneDim();c=oneDim();at++;
+    if(r===4&&c===4)continue;
+    if((r===3&&c===4)||(r===4&&c===3)){if(rng()<.60)continue;}
+    break;
+  }while(at<50); return[r,c];
+}
+function squareDim(){return weightedInt([[2,3],[3,5]]);}
+
+// ─── Special matrix builders ──────────────────────────────────────────────────
+function makeIdentity(n){return Array.from({length:n},(_,i)=>Array.from({length:n},(_,j)=>i===j?1:0));}
+function makeDiagonal(n,sf){return Array.from({length:n},(_,i)=>Array.from({length:n},(_,j)=>i===j?(sf?randNonzeroS():randNonzero()):0));}
+function makeScalar(n){const k=randNonzero();return Array.from({length:n},(_,i)=>Array.from({length:n},(_,j)=>i===j?k:0));}
+function makeUpperTri(n){return Array.from({length:n},(_,i)=>Array.from({length:n},(_,j)=>j>=i?randEntry():0));}
+function makeLowerTri(n){return Array.from({length:n},(_,i)=>Array.from({length:n},(_,j)=>j<=i?randEntry():0));}
+function makePermutation(n){
+  const p=Array.from({length:n},(_,i)=>i);
+  for(let i=n-1;i>0;i--){const j=Math.floor(rng()*(i+1));[p[i],p[j]]=[p[j],p[i]];}
+  return Array.from({length:n},(_,i)=>Array.from({length:n},(_,j)=>j===p[i]?1:0));
+}
+function makeSkew(n){
+  const M=Array.from({length:n},()=>Array(n).fill(0));
+  for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){const v=randEntry();M[i][j]=v;M[j][i]=-v;}
+  return M;
+}
+function makeNilpotent(n){return Array.from({length:n},(_,i)=>Array.from({length:n},(_,j)=>j>i?randEntry():0));}
+
+// Idempotent P²=P: outer product of unit vector v, u s.t. u·v=1
+// Simple construction: P = v * uT where uT*v = 1
+function makeIdempotent(n){
+  // Use rank-1: P = col * row, where row*col = 1
+  // col = e_i, row = e_j scaled so dot=1 → only works for i=j
+  // Better: random col c, row r with r·c=1, P=c*r
+  const c=Array(n).fill(0).map(()=>weightedInt([[-1,2],[0,3],[1,4],[2,1]]));
+  const r=Array(n).fill(0).map(()=>weightedInt([[-1,2],[0,3],[1,4],[2,1]]));
+  // scale r so r·c = 1
+  const dot=c.reduce((s,v,i)=>s+v*r[i],0);
+  if(dot===0){c[0]=1;r[0]=1;} // fallback
+  const scale=dot===0?1:1/dot;
+  // P[i][j] = c[i]*r[j]*scale — may not be integer; use integer construction instead
+  // Integer: choose i, set col = e_i, row has row[i]=1 others random, then P=col*row
+  const idx=Math.floor(rng()*n);
+  const col=Array(n).fill(0); col[idx]=1;
+  const row=Array(n).fill(0).map(()=>weightedInt([[-1,1],[0,4],[1,3],[2,1]]));
+  row[idx]=1; // ensures P[idx][idx]=1
+  return Array.from({length:n},(_,i)=>Array.from({length:n},(_,j)=>col[i]*row[j]));
+}
+
+// Involutory A²=I: A = 2P - I where P is idempotent
+function makeInvolutory(n){
+  const P=makeIdempotent(n);
+  return Array.from({length:n},(_,i)=>Array.from({length:n},(_,j)=>2*P[i][j]-(i===j?1:0)));
+}
+
+function injectSparseZero(mat,rows,cols){
+  if(rng()>.20)return;
+  if(rng()<.5){const r=Math.floor(rng()*rows);for(let j=0;j<cols;j++)mat[r][j]=0;}
+  else{const c=Math.floor(rng()*cols);for(let i=0;i<rows;i++)mat[i][c]=0;}
+}
+
+const TYPE_LABELS={
+  identity:'单位矩阵 I',diagonal:'对角矩阵',scalar:'标量矩阵',
+  upper_tri:'上三角矩阵',lower_tri:'下三角矩阵',permutation:'置换矩阵',
+  skew:'反对称矩阵',nilpotent:'幂零矩阵',idempotent:'幂等矩阵',
+  involutory:'对合矩阵',random:'',
+};
+const SQUARE_TYPES=['identity','diagonal','scalar','upper_tri','lower_tri','permutation','skew','nilpotent','idempotent','involutory'];
+
+function buildMatrix(type,r,c){
+  const n=Math.min(r,c);
+  switch(type){
+    case 'identity':   return{mat:makeIdentity(n),rows:n,cols:n};
+    case 'diagonal':   return{mat:makeDiagonal(n),rows:n,cols:n};
+    case 'scalar':     return{mat:makeScalar(n),rows:n,cols:n};
+    case 'upper_tri':  return{mat:makeUpperTri(n),rows:n,cols:n};
+    case 'lower_tri':  return{mat:makeLowerTri(n),rows:n,cols:n};
+    case 'permutation':return{mat:makePermutation(n),rows:n,cols:n};
+    case 'skew':       return{mat:makeSkew(n),rows:n,cols:n};
+    case 'nilpotent':  return{mat:makeNilpotent(n),rows:n,cols:n};
+    case 'idempotent': return{mat:makeIdempotent(n),rows:n,cols:n};
+    case 'involutory': return{mat:makeInvolutory(n),rows:n,cols:n};
+    default:return null;
+  }
+}
+function pickSpecialType(){
+  const all=['identity','diagonal','scalar','upper_tri','lower_tri','permutation','skew','nilpotent','idempotent','involutory'];
   return all[Math.floor(rng()*all.length)];
 }
 
-function squareDim() {
-  return weightedInt([[2,3],[3,5]]);  // 2 or 3, no 4
-}
+// ─── Problem type definitions ─────────────────────────────────────────────────
+// Each problem type: { label, desc, generate() → sets state fields }
+// state fields: A, B, C, m(rows A), k(cols A = rows B), n(cols B), typeA, typeB
+// problemType string used for badge
 
-// ─── State ───────────────────────────────────────────────────────────────────
-let state = { A:[], B:[], C:[], m:0, k:0, n:0, typeA:'random', typeB:'random', checked:false, scored:false, scoreOk:0, scoreTotal:0 };
+const PROBLEM_TYPES = [
+  // [defaultWeight, key, label]
+  [22, 'normal',        '普通乘法'],
+  [14, 'aat',           'AA^T'],
+  [14, 'ata',           'A^TA'],
+  [14, 'asquare',       'A² 自乘'],
+  [ 4, 'acube',         'A³ 三次幂'],
+  [ 4, 'idempotent',    'P²=P 幂等'],
+  [ 4, 'involutory',    'A²=I 对合'],
+  [ 4, 'tri_tri',       '三角×三角'],
+  [ 4, 'perm_perm',     '置换×置换'],
+  [ 4, 'diag_any',      '对角×任意'],
+];
+let typeWeights = Object.fromEntries(PROBLEM_TYPES.map(([w,k])=>[k,w]));
+let specOneWeight = 15;
+let specBothWeight = 5;
+
 let isDark = true;
 
-// Occasionally zero out one row or one column (not all — just sparse structure)
-function injectSparseZero(mat, rows, cols) {
-  if (rng() > 0.20) return; // 20% chance
-  if (rng() < 0.5) {
-    // zero a random row
-    const r = Math.floor(rng() * rows);
-    for (let j=0;j<cols;j++) mat[r][j] = 0;
-  } else {
-    // zero a random col
-    const c = Math.floor(rng() * cols);
-    for (let i=0;i<rows;i++) mat[i][c] = 0;
+// ─── Persist settings ─────────────────────────────────────────────────────────
+const STORAGE_KEY = 'matrixlab_settings';
+
+function saveSettings() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      weights, typeWeights, specOneWeight, specBothWeight, isDark
+    }));
+  } catch(e) {}
+}
+
+function loadSettings() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    if (d.weights)      Object.assign(weights, d.weights);
+    if (d.typeWeights)  Object.assign(typeWeights, d.typeWeights);
+    if (typeof d.specOneWeight  === 'number') specOneWeight  = d.specOneWeight;
+    if (typeof d.specBothWeight === 'number') specBothWeight = d.specBothWeight;
+    if (typeof d.isDark === 'boolean') {
+      isDark = d.isDark;
+      document.body.classList.toggle('light', !isDark);
+      // themeBtn may not exist yet but isDark is set; button text updated later
+    }
+  } catch(e) {}
+}
+
+loadSettings();
+
+// ─── Init panels (must be after PROBLEM_TYPES and loadSettings) ──────────────
+buildProbPanel();
+buildTypePanel();
+buildSpecPanel();
+// sync theme button text after possible load
+document.addEventListener('DOMContentLoaded',()=>{ const b=$('themeBtn'); if(b) b.textContent=isDark?'🌙':'☀️'; });
+
+// ─── State ────────────────────────────────────────────────────────────────────
+let state={A:[],B:[],C:[],m:0,k:0,n:0,typeA:'random',typeB:'random',
+  problemType:'normal',badgeLabel:'',checked:false,scored:false,scoreOk:0,scoreTotal:0};
+
+// ─── Generate ─────────────────────────────────────────────────────────────────
+function generate(){
+  // pick problem type by dynamic weights
+  const total=PROBLEM_TYPES.reduce((s,[,k])=>s+typeWeights[k],0);
+  let r=rng()*total;
+  let chosen=PROBLEM_TYPES[PROBLEM_TYPES.length-1];
+  for(const t of PROBLEM_TYPES){r-=typeWeights[t[1]];if(r<=0){chosen=t;break;}}
+  const[,key,badge]=chosen;
+  state.problemType=key; state.badgeLabel=badge;
+  state.typeA='random'; state.typeB='random';
+  state.checked=false; state.scored=false;
+
+  switch(key){
+    case 'normal':    genNormal(); break;
+    case 'aat':       genAAT(); break;
+    case 'ata':       genATA(); break;
+    case 'asquare':   genASquare(); break;
+    case 'acube':     genACube(); break;
+    case 'idempotent':genIdempotent(); break;
+    case 'involutory':genInvolutory(); break;
+    case 'tri_tri':   genTriTri(); break;
+    case 'perm_perm': genPermPerm(); break;
+    case 'diag_any':  genDiagAny(); break;
   }
 }
 
-// ─── Generate ────────────────────────────────────────────────────────────────
-function generate() {
-  const roll = rng();
-  // 15% both special, 25% one special, 60% both random
-  const mode = roll < 0.15 ? 'both' : roll < 0.40 ? 'one' : 'none';
-
-  let m, k, n, A, B, typeA = 'random', typeB = 'random';
-
-  if (mode === 'none') {
-    [m, k] = randDim();
-    n = (() => { let at=0,r; do { r=(rng()<0.90)?weightedInt([[1,1],[2,2],[3,3]]):4; at++; if(r===4&&m===4)continue; break; } while(at<50); return r; })();
-    A = Array.from({length:m},()=>Array.from({length:k},randEntry));
-    B = Array.from({length:k},()=>Array.from({length:n},randEntry));
-    // 20% chance: zero out one random row or col in A or B
-    injectSparseZero(A, m, k);
-    injectSparseZero(B, k, n);
-
-  } else if (mode === 'one') {
-    const side = rng() < 0.5 ? 'A' : 'B';
-    typeA = side==='A' ? pickSpecialType() : 'random';
-    typeB = side==='B' ? pickSpecialType() : 'random';
-
-    const isSquareA = SQUARE_TYPES.includes(typeA);
-    const isSquareB = SQUARE_TYPES.includes(typeB);
-
-    if (isSquareA) {
-      const s = squareDim(); m = s; k = s;
-      n = (rng()<0.85) ? weightedInt([[1,1],[2,2],[3,3]]) : 3;
-      const res = buildMatrix(typeA, m, k); A = res.mat;
-      B = Array.from({length:k},()=>Array.from({length:n},randEntry));
-    } else if (isSquareB) {
-      const s = squareDim(); k = s; n = s;
-      m = (rng()<0.85) ? weightedInt([[1,1],[2,2],[3,3]]) : 3;
-      A = Array.from({length:m},()=>Array.from({length:k},randEntry));
-      const res = buildMatrix(typeB, k, n); B = res.mat;
-    } else {
-      // fallback: treat as random
-      [m, k] = randDim();
-      n = (rng()<0.85) ? weightedInt([[1,1],[2,2],[3,3]]) : 3;
-      A = Array.from({length:m},()=>Array.from({length:k},randEntry));
-      B = Array.from({length:k},()=>Array.from({length:n},randEntry));
-    }
-
-  } else { // both special
-    typeA = pickSpecialType();
-    typeB = pickSpecialType();
-    const sA = SQUARE_TYPES.includes(typeA);
-    const sB = SQUARE_TYPES.includes(typeB);
-
-    if (sA || sB) {
-      const s = squareDim(); m=s; k=s; n=s;
-    } else {
-      // fallback: plain square random
-      const s = squareDim(); m=s; k=s; n=s;
-    }
-    const resA = buildMatrix(typeA,m,k); A=resA.mat; m=resA.rows; k=resA.cols;
-    const resB = buildMatrix(typeB,k,n); B=resB.mat; n=resB.cols;
-  }
-
-  state.m=m; state.k=k; state.n=n;
-  state.A=A; state.B=B;
+function setAB(A,m,k,B,n){
+  state.A=A;state.B=B;state.m=m;state.k=k;state.n=n;
   state.C=matMul(A,m,k,B,n);
-  state.typeA=typeA; state.typeB=typeB;
-  state.checked=false; state.scored=false;
   render();
 }
 
-// ─── SVG Brackets ────────────────────────────────────────────────────────────
-function makeBracket(open, h) {
-  const w = 12;
-  const path = open
-    ? `M${w-2},2 Q2,2 2,${h/2} Q2,${h-2} ${w-2},${h-2}`
-    : `M2,2 Q${w-2},2 ${w-2},${h/2} Q${w-2},${h-2} 2,${h-2}`;
-  return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}">
-    <path d="${path}" fill="none" stroke="var(--matrix-border)" stroke-width="2" stroke-linecap="round"/>
-  </svg>`;
+function genNormal(){
+  const _tot=specBothWeight+specOneWeight+80;
+  const roll=rng()*_tot;
+  const mode=roll<specBothWeight?'both':roll<specBothWeight+specOneWeight?'one':'none';
+  let m,k,n,A,B,typeA='random',typeB='random';
+  if(mode==='none'){
+    [m,k]=randDim();
+    n=(()=>{let at=0,r;do{r=rng()<.90?weightedInt([[1,1],[2,2],[3,3]]):4;at++;if(r===4&&m===4)continue;break;}while(at<50);return r;})();
+    A=Array.from({length:m},()=>Array.from({length:k},randEntry));
+    B=Array.from({length:k},()=>Array.from({length:n},randEntry));
+    injectSparseZero(A,m,k);injectSparseZero(B,k,n);
+  } else if(mode==='one'){
+    const side=rng()<.5?'A':'B';
+    typeA=side==='A'?pickSpecialType():'random';
+    typeB=side==='B'?pickSpecialType():'random';
+    const sqA=SQUARE_TYPES.includes(typeA),sqB=SQUARE_TYPES.includes(typeB);
+    if(sqA){
+      const s=squareDim();m=s;k=s;n=(rng()<.85)?weightedInt([[1,1],[2,2],[3,3]]):3;
+      const res=buildMatrix(typeA,m,k);A=res.mat;B=Array.from({length:k},()=>Array.from({length:n},randEntry));
+    } else if(sqB){
+      const s=squareDim();k=s;n=s;m=(rng()<.85)?weightedInt([[1,1],[2,2],[3,3]]):3;
+      A=Array.from({length:m},()=>Array.from({length:k},randEntry));const res=buildMatrix(typeB,k,n);B=res.mat;
+    } else {
+      [m,k]=randDim();n=(rng()<.85)?weightedInt([[1,1],[2,2],[3,3]]):3;
+      A=Array.from({length:m},()=>Array.from({length:k},randEntry));B=Array.from({length:k},()=>Array.from({length:n},randEntry));
+    }
+  } else {
+    typeA=pickSpecialType();typeB=pickSpecialType();
+    const s=squareDim();m=s;k=s;n=s;
+    const rA=buildMatrix(typeA,m,k);A=rA.mat;m=rA.rows;k=rA.cols;
+    const rB=buildMatrix(typeB,k,n);B=rB.mat;n=rB.cols;
+  }
+  state.typeA=typeA;state.typeB=typeB;
+  setAB(A,m,k,B,n);
 }
 
-function matrixBlock(data, rows, cols, type, side) {
-  const cellH=44, gap=4, pad=8;
-  const h = rows*cellH + (rows-1)*gap + pad*2;
+function genAAT(){
+  const[m,k]=randDim();
+  const A=Array.from({length:m},()=>Array.from({length:k},randEntry));
+  const AT=transpose(A,m,k);
+  setAB(A,m,k,AT,m);
+}
+function genATA(){
+  const[m,k]=randDim();
+  const A=Array.from({length:m},()=>Array.from({length:k},randEntry));
+  const AT=transpose(A,m,k);
+  setAB(AT,k,m,A,k);
+}
+
+function genASquare(){
+  // A² = A×A, use smaller dims, higher 0/1 probability
+  const n=squareDim();
+  const A=Array.from({length:n},()=>Array.from({length:n},randEntryS));
+  setAB(A,n,n,A,n);
+}
+
+function genACube(){
+  // Show A×A then the user multiplies result by A again — but here we show A×A directly
+  // We display (A×A)×A: left matrix is A², right is A
+  const n=squareDim();
+  const A=Array.from({length:n},()=>Array.from({length:n},randEntryS));
+  const A2=matMul(A,n,n,A,n); // left operand shown is A², right is A
+  setAB(A2,n,n,A,n);
+}
+
+function genIdempotent(){
+  const n=squareDim();
+  const P=makeIdempotent(n);
+  setAB(P,n,n,P,n);
+}
+function genInvolutory(){
+  const n=squareDim();
+  const A=makeInvolutory(n);
+  setAB(A,n,n,A,n);
+}
+function genTriTri(){
+  const n=squareDim();
+  const upper=rng()<.5;
+  const A=upper?makeUpperTri(n):makeLowerTri(n);
+  const B=upper?makeUpperTri(n):makeLowerTri(n);
+  state.typeA=upper?'upper_tri':'lower_tri';
+  state.typeB=upper?'upper_tri':'lower_tri';
+  setAB(A,n,n,B,n);
+}
+function genPermPerm(){
+  const n=squareDim();
+  const A=makePermutation(n);
+  const B=makePermutation(n);
+  state.typeA='permutation';state.typeB='permutation';
+  setAB(A,n,n,B,n);
+}
+function genDiagAny(){
+  const n=squareDim();
+  // 50%: diag×random, 50%: random×diag
+  const diagLeft=rng()<.5;
+  const D=makeDiagonal(n);
+  const R=Array.from({length:n},()=>Array.from({length:n},randEntry));
+  if(diagLeft){state.typeA='diagonal';setAB(D,n,n,R,n);}
+  else{state.typeB='diagonal';setAB(R,n,n,D,n);}
+}
+
+// ─── SVG Brackets ─────────────────────────────────────────────────────────────
+function makeBracket(open,h){
+  const w=12;
+  const path=open?`M${w-2},2 Q2,2 2,${h/2} Q2,${h-2} ${w-2},${h-2}`:`M2,2 Q${w-2},2 ${w-2},${h/2} Q${w-2},${h-2} 2,${h-2}`;
+  return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><path d="${path}" fill="none" stroke="var(--matrix-border)" stroke-width="2" stroke-linecap="round"/></svg>`;
+}
+
+function matrixBlock(data,rows,cols,type,side){
+  const h=rows*44+(rows-1)*4+16;
   let cells='';
-  for (let i=0;i<rows;i++) for (let j=0;j<cols;j++) {
+  for(let i=0;i<rows;i++)for(let j=0;j<cols;j++){
     const v=data[i][j];
     cells+=`<div class="matrix-cell ${v<0?'neg':''}">${v}</div>`;
   }
-  const label = TYPE_LABELS[type] || '';
-  const tagCls = 'type-tag ' + (label ? 'special' : 'random') + ' hidden';
+  const label=TYPE_LABELS[type]||'';
+  const tagCls='type-tag '+(label?'special':'random')+' hidden';
   return `<div class="matrix-block">
-    <div class="${tagCls}" id="tag-${side}" data-label="${label}">${label || '&nbsp;'}</div>
+    <div class="${tagCls}" id="tag-${side}" data-label="${label}">${label||'&nbsp;'}</div>
     <div class="matrix-wrap">
       <div class="bracket">${makeBracket(true,h)}</div>
       <div class="matrix-grid" style="grid-template-columns:repeat(${cols},40px);grid-template-rows:repeat(${rows},40px);">${cells}</div>
@@ -653,118 +605,95 @@ function matrixBlock(data, rows, cols, type, side) {
   </div>`;
 }
 
-function revealTags() {
-  ['A','B'].forEach(side => {
-    const el = document.getElementById('tag-'+side);
-    if (el && el.dataset.label) {
-      el.classList.remove('hidden');
-      el.classList.add('reveal-anim');
-    }
+function revealTags(){
+  ['A','B'].forEach(side=>{
+    const el=document.getElementById('tag-'+side);
+    if(el&&el.dataset.label){el.classList.remove('hidden');el.classList.add('reveal-anim');}
   });
 }
 
-// ─── Render ──────────────────────────────────────────────────────────────────
-function render() {
-  const {A,B,m,k,n,typeA,typeB} = state;
-
-  $('problemRow').innerHTML =
-    matrixBlock(A,m,k,typeA,'A') +
-    `<div class="op-label">×</div>` +
+// ─── Render ───────────────────────────────────────────────────────────────────
+function render(){
+  const{A,B,m,k,n,typeA,typeB,badgeLabel}=state;
+  $('problemRow').innerHTML=
+    matrixBlock(A,m,k,typeA,'A')+
+    `<div class="op-label">×</div>`+
     matrixBlock(B,k,n,typeB,'B');
 
-  const grid = document.createElement('div');
-  grid.className='answer-grid'; grid.id='answerGrid';
-  for (let i=0;i<5;i++) for (let j=0;j<5;j++) {
-    const cell=document.createElement('div');
-    cell.className='answer-cell';
+  const grid=document.createElement('div');
+  grid.className='answer-grid';grid.id='answerGrid';
+  for(let i=0;i<4;i++)for(let j=0;j<4;j++){
+    const cell=document.createElement('div');cell.className='answer-cell';
     const inp=document.createElement('input');
-    inp.type='number'; inp.id=`cell_${i}_${j}`;
-    inp.setAttribute('autocomplete','off');
-    inp.addEventListener('keydown', e=>{
+    inp.type='number';inp.id=`cell_${i}_${j}`;inp.setAttribute('autocomplete','off');
+    inp.addEventListener('keydown',e=>{
       if(e.key==='Enter'||e.key==='Tab'){e.preventDefault();focusNext(i,j);}
-      else if(e.key==='ArrowRight') focusCell(i,j+1);
-      else if(e.key==='ArrowLeft')  focusCell(i,j-1);
-      else if(e.key==='ArrowDown')  focusCell(i+1,j);
-      else if(e.key==='ArrowUp')    focusCell(i-1,j);
+      else if(e.key==='ArrowRight')focusCell(i,j+1);
+      else if(e.key==='ArrowLeft') focusCell(i,j-1);
+      else if(e.key==='ArrowDown') focusCell(i+1,j);
+      else if(e.key==='ArrowUp')   focusCell(i-1,j);
     });
-    cell.appendChild(inp); grid.appendChild(cell);
+    cell.appendChild(inp);grid.appendChild(cell);
   }
 
-  const h=5*52+4*5+8;
-  const outer=$('answerOuter');
-  outer.innerHTML='';
-  const bO=document.createElement('div'); bO.className='bracket'; bO.innerHTML=makeBracket(true,h);
-  const bC=document.createElement('div'); bC.className='bracket'; bC.innerHTML=makeBracket(false,h);
-  outer.appendChild(bO); outer.appendChild(grid); outer.appendChild(bC);
+  const h=4*54+3*5+8;
+  const outer=$('answerOuter');outer.innerHTML='';
+  const bO=document.createElement('div');bO.className='bracket';bO.innerHTML=makeBracket(true,h);
+  const bC=document.createElement('div');bC.className='bracket';bC.innerHTML=makeBracket(false,h);
+  outer.appendChild(bO);outer.appendChild(grid);outer.appendChild(bC);
 
   hideFeedback();
-  setTimeout(()=>{ const inp=$('cell_0_0'); if(inp) inp.focus(); },80);
+  setTimeout(()=>{const inp=$('cell_0_0');if(inp)inp.focus();},80);
 }
 
-function focusCell(i,j) {
-  if(i<0||i>4||j<0||j>4) return;
-  const inp=$(`cell_${i}_${j}`);
-  if(inp&&!inp.classList.contains('inactive')) inp.focus();
-}
-function focusNext(i,j) {
-  if(j<4) focusCell(i,j+1); else if(i<4) focusCell(i+1,0);
-}
+function focusCell(i,j){if(i<0||i>3||j<0||j>3)return;const inp=$(`cell_${i}_${j}`);if(inp&&!inp.classList.contains('inactive'))inp.focus();}
+function focusNext(i,j){if(j<3)focusCell(i,j+1);else if(i<3)focusCell(i+1,0);}
 
-// ─── Check ───────────────────────────────────────────────────────────────────
-function check() {
-  if(state.checked) return;  // locked only after correct or reveal
-  const {C,m,n}=state;
-  let allFilled=true, allCorrect=true;
-  for(let i=0;i<5;i++) for(let j=0;j<5;j++) {
+// ─── Check ────────────────────────────────────────────────────────────────────
+function check(){
+  if(state.checked)return;
+  const{C,m,n}=state;
+  let allFilled=true,allCorrect=true;
+  for(let i=0;i<4;i++)for(let j=0;j<4;j++){
     const inp=$(`cell_${i}_${j}`);
     inp.classList.remove('correct','wrong','inactive','revealed');
-    if(i<m&&j<n) {
+    if(i<m&&j<n){
       const val=inp.value.trim();
       if(val===''){allFilled=false;}
-      else { if(parseInt(val,10)===C[i][j]) inp.classList.add('correct'); else { inp.classList.add('wrong'); allCorrect=false; } }
-    } else { inp.classList.add('inactive'); }
+      else{if(parseInt(val,10)===C[i][j])inp.classList.add('correct');else{inp.classList.add('wrong');allCorrect=false;}}
+    }else{inp.classList.add('inactive');}
   }
   if(!allFilled){showFeedback('还有空格未填写！','info');return;}
   if(allCorrect){
-    // Lock only on correct; count score once
-    if(!state.scored){ state.scoreOk++; state.scoreTotal++; $('scoreOk').textContent=state.scoreOk; $('scoreTotal').textContent=state.scoreTotal; state.scored=true; }
+    if(!state.scored){state.scoreOk++;state.scoreTotal++;$('scoreOk').textContent=state.scoreOk;$('scoreTotal').textContent=state.scoreTotal;state.scored=true;}
     state.checked=true;
-    showFeedback('✓ 完全正确！','ok');
-    revealTags();
-    updateProgress();
-  } else {
-    // Wrong: count once, keep unlocked so user can retry
-    if(!state.scored){ state.scoreTotal++; $('scoreTotal').textContent=state.scoreTotal; state.scored=true; updateProgress(); }
-    showFeedback('✗ 有错误，请修正标红的格子后再试','fail');
+    showFeedback('✓ 完全正确！','ok');revealTags();updateProgress();
+  }else{
+    if(!state.scored){state.scoreTotal++;$('scoreTotal').textContent=state.scoreTotal;state.scored=true;updateProgress();}
+    showFeedback('✗ 有错误，请修正标红格子后再试','fail');
   }
 }
 
-function reveal() {
-  const {C,m,n}=state;
-  for(let i=0;i<5;i++) for(let j=0;j<5;j++) {
+function reveal(){
+  const{C,m,n}=state;
+  for(let i=0;i<4;i++)for(let j=0;j<4;j++){
     const inp=$(`cell_${i}_${j}`);
     inp.classList.remove('correct','wrong','inactive');
-    if(i<m&&j<n){ inp.value=C[i][j]; inp.classList.add('revealed'); inp.disabled=true; }
-    else { inp.classList.add('inactive'); inp.value=''; }
+    if(i<m&&j<n){inp.value=C[i][j];inp.classList.add('revealed');inp.disabled=true;}
+    else{inp.classList.add('inactive');inp.value='';}
   }
-  if(!state.checked){ state.scoreTotal++; $('scoreTotal').textContent=state.scoreTotal; state.checked=true; updateProgress(); }
+  if(!state.checked){
+    if(!state.scored){state.scoreTotal++;$('scoreTotal').textContent=state.scoreTotal;state.scored=true;}
+    state.checked=true;updateProgress();
+  }
   showFeedback('已显示答案','info');
 }
 
-function updateProgress() {
-  const pct=state.scoreTotal===0?0:Math.round(state.scoreOk/state.scoreTotal*100);
-  $('progressFill').style.width=pct+'%';
-}
+function updateProgress(){const pct=state.scoreTotal===0?0:Math.round(state.scoreOk/state.scoreTotal*100);$('progressFill').style.width=pct+'%';}
+function showFeedback(msg,type){const el=$('feedback');el.textContent=msg;el.className=`feedback show ${type}`;}
+function hideFeedback(){$('feedback').className='feedback';}
 
-function showFeedback(msg,type) {
-  const el=$('feedback'); el.textContent=msg; el.className=`feedback show ${type}`;
-}
-function hideFeedback() { $('feedback').className='feedback'; }
-
-$('themeBtn').addEventListener('click',()=>{
-  isDark=!isDark; document.body.classList.toggle('light',!isDark);
-  $('themeBtn').textContent=isDark?'🌙':'☀️';
-});
+$('themeBtn').addEventListener('click',()=>{isDark=!isDark;document.body.classList.toggle('light',!isDark);$('themeBtn').textContent=isDark?'🌙':'☀️';saveSettings();});
 $('checkBtn').addEventListener('click',check);
 $('nextBtn').addEventListener('click',generate);
 $('revealBtn').addEventListener('click',reveal);
